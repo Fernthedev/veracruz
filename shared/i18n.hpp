@@ -18,7 +18,8 @@ namespace Veracruz {
     using Localization = BasicLocalization;
 
     using LocaleMap = std::unordered_map<LangKey const, const Localization>;
-    using LanguageSelectedEvent = UnorderedEventCallback<LangKey const&, Localization const&>;
+    using LanguageSelectedEvent = UnorderedEventCallback<LangKey const&, std::optional<std::reference_wrapper<Localization const>>>;
+    using BasicLanguageSelectedEvent = UnorderedEventCallback<LangKey const&>;
 
     namespace LocalizationHandler {
         void Register(ModKey info, LocaleMap const& locale);
@@ -27,11 +28,14 @@ namespace Veracruz {
         void Unregister(ModKey info);
         void Unregister(ModKey info, LangKey const& langKey);
 
-        void SelectLanguage(Lang const& lang);
+        void SelectLanguage(LangKey const& lang);
         LangKey const& GetSelectedLanguage();
         // TODO: Get available languages and register languages
 
+        std::optional<std::reference_wrapper<Localization const>> TryGetLocale(LangKey const& lang, ModKey info);
         Localization const& GetCurrentLocale(ModKey info);
         LanguageSelectedEvent& GetLocaleEventHandler(ModKey info);
+
+        BasicLanguageSelectedEvent& GetBasicLocaleEventHandler();
     };
 }

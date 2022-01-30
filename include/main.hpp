@@ -22,7 +22,7 @@ Logger& getLogger();
 //}
 
 template<typename... TArgs>
-constexpr static void fmtLog(Logging::Level lvl, fmt::format_string<TArgs...> str, TArgs&&... args) {
+constexpr static void fmtLog(Logging::Level lvl, fmt::format_string<TArgs...> str, TArgs&&... args) noexcept {
     getLogger().log(lvl, fmt::format<TArgs...>(str, std::forward<TArgs>(args)...));
 }
 

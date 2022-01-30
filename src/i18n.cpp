@@ -11,6 +11,7 @@ using ModLocaleMap = std::unordered_map<ModKeyPtr, const Localization>;
 
 static std::unordered_map<const LangKey, ModLocaleMap> registeredLocales;
 static std::unordered_map<ModKeyPtr, LanguageSelectedEvent> languageLoadedEvents;
+static BasicLanguageSelectedEvent basicLanguageLoadedEvent;
 
 static ModLocaleMap const* selectedLanguageMap; // optional?
 static std::optional<Lang> selectedLanguage;
@@ -30,7 +31,6 @@ void LocalizationHandler::Register(ModInfo const &info, LangKey const& lang, Loc
 
     if (modLocaleMap.contains(modKey)) {
         fmtThrowError("Mod key for id {} is already registered", info.id);
-        throw std::runtime_error(fmt::format("Mod key for id {} is already registered", info.id));
     }
 
     modLocaleMap.try_emplace(modKey, locale);
@@ -65,14 +65,40 @@ void LocalizationHandler::SelectLanguage(Lang const &lang) {
     // todo: const
     for (auto& [modInfo, callback] : languageLoadedEvents) {
         if (callback.size() > 0) {
-            Localization const& locale = selectedLanguageMap->at(modInfo);
-            callback.invoke(*selectedLanguage, locale);
+            auto localeIt = selectedLanguageMap->find(modInfo);
+
+            if (localeIt != selectedLanguageMap->end()) {
+                callback.invoke(*selectedLanguage, std::cref(localeIt->second));
+            } else {
+                callback.invoke(*selectedLanguage, std::nullopt);
+            }
         }
     }
+
+    basicLanguageLoadedEvent.invoke(*selectedLanguage);
 }
 
 LangKey const &LocalizationHandler::GetSelectedLanguage() {
     return selectedLanguage.value();
+}
+
+std::optional<std::reference_wrapper<Localization const>>
+LocalizationHandler::TryGetLocale(LangKey const &lang, ModKey info) {
+    auto it = registeredLocales.find(lang);
+
+    if (it == registeredLocales.end()) {
+        return std::nullopt;
+    }
+
+    ModLocaleMap const& map = std::ref(it->second);
+
+    auto mapIt = map.find(&info);
+
+    if (mapIt == map.end()) {
+        return std::nullopt;
+    }
+
+    return std::cref(mapIt->second);
 }
 
 Localization const & LocalizationHandler::GetCurrentLocale(ModKey info) {
@@ -91,4 +117,8 @@ Localization const & LocalizationHandler::GetCurrentLocale(ModKey info) {
 
 LanguageSelectedEvent &LocalizationHandler::GetLocaleEventHandler(ModInfo const &info) {
     return languageLoadedEvents[&info];
+}
+
+BasicLanguageSelectedEvent& LocalizationHandler::GetBasicLocaleEventHandler() {
+    return basicLanguageLoadedEvent;
 }
