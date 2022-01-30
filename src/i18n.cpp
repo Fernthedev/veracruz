@@ -63,7 +63,7 @@ void LocalizationHandler::SelectLanguage(Lang const &lang) {
     selectedLanguage.emplace(lang);
 
     // todo: const
-    for (auto& [modInfo, callback] : languageLoadedEvents) {
+    for (auto const& [modInfo, callback] : languageLoadedEvents) {
         if (callback.size() > 0) {
             auto localeIt = selectedLanguageMap->find(modInfo);
 
@@ -78,8 +78,41 @@ void LocalizationHandler::SelectLanguage(Lang const &lang) {
     basicLanguageLoadedEvent.invoke(*selectedLanguage);
 }
 
+std::unordered_set<LangKey> LocalizationHandler::GetLanguages() {
+    std::unordered_set<LangKey> set;
+    set.reserve(registeredLocales.size());
+
+    for (auto const& [lang, _] : registeredLocales) {
+        set.emplace(lang);
+    }
+
+    return set;
+}
+
+void LocalizationHandler::RegisterLanguage(LangKey const &lang) {
+    registeredLocales.try_emplace(lang);
+}
+
 LangKey const &LocalizationHandler::GetSelectedLanguage() {
     return selectedLanguage.value();
+}
+
+std::optional<LangKey>
+LocalizationHandler::FindSuitableFallback(ModInfo const &info, std::vector<LangKey> const &supportedLanguages) noexcept {
+    if (selectedLanguageMap->contains(&info)) {
+        return *selectedLanguage;
+    }
+
+    for (auto const& lang : supportedLanguages) {
+        auto langIt = registeredLocales.find(lang);
+        if (langIt == registeredLocales.end()) continue;
+
+        if (langIt->second.contains(&info)) {
+            return langIt->first;
+        }
+    }
+
+    return std::nullopt;
 }
 
 std::optional<std::reference_wrapper<Localization const>>
