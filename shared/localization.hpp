@@ -25,7 +25,7 @@ namespace Veracruz {
         }
 
 
-        [[nodiscard]] std::string_view get(std::string_view key) const {
+        [[nodiscard]] std::string_view get(std::string_view key) const noexcept {
             auto it = keys.find(key);
 
             if (it == keys.end())
@@ -34,7 +34,7 @@ namespace Veracruz {
             return it->second;
         }
 
-        [[nodiscard]] bool tryGet(std::string_view key, std::string_view& out) const {
+        [[nodiscard]] bool tryGet(std::string_view key, std::string_view& out) const noexcept {
             auto it = keys.find(key);
 
             if (it == keys.end()) {
@@ -47,7 +47,30 @@ namespace Veracruz {
             return true;
         }
 
-        [[nodiscard]] bool hasKey(std::string_view key) const {
+        // TODO: Test
+#ifdef FMT_CORE_H_
+        template<typename... TArgs>
+        [[nodiscard]] std::string get(std::string_view key, TArgs&&... args) const {
+            std::string ret;
+            tryGet(key, ret, std::forward<TArgs>(args)...);
+
+            return ret;
+        }
+
+
+        template<typename... TArgs>
+        [[nodiscard]] bool tryGet(std::string_view key, std::string& out, TArgs&&... args) const {
+            auto ret = tryGet(key, out);
+
+            if (ret) {
+                out = fmt::format<TArgs...>(out, std::forward<TArgs>(args)...);
+            }
+
+            return ret;
+        }
+#endif
+
+        [[nodiscard]] constexpr bool hasKey(std::string_view key) const noexcept {
             return keys.contains(key);
         }
 
