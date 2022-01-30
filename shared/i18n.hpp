@@ -29,6 +29,7 @@ namespace Veracruz {
 
         void SelectLanguage(Lang const& lang);
         LangKey const& GetSelectedLanguage();
+        // TODO: Get available languages and register languages
 
         Localization const& GetCurrentLocale(ModKey info);
         LanguageSelectedEvent& GetLocaleEventHandler(ModKey info);

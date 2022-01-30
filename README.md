@@ -12,6 +12,11 @@ I'll write some docs later, am tired.
 
 Maybe some optional headers or scripts for parsing JSON later
 
+## TODO:
+Better handle fallback (I hate the current way)
+UI?
+Select language based on game's language
+
 ## Credits
 
 * [zoller27osu](https://github.com/zoller27osu), [Sc2ad](https://github.com/Sc2ad) and [jakibaki](https://github.com/jakibaki) - [beatsaber-hook](https://github.com/sc2ad/beatsaber-hook)
