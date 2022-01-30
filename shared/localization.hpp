@@ -15,17 +15,17 @@ namespace Veracruz {
     using LocaleValue = std::string;
 
     struct BasicLocalization {
-        BasicLocalization(std::unordered_map<StringKey, LocaleValue> keys) : keys(std::move(keys)) {}
+        BasicLocalization(std::unordered_map<StringKey, LocaleValue const> keys) : keys(std::move(keys)) {}
 
         template<IsLocalization FallbackLocale>
-        BasicLocalization(std::unordered_map<StringKey, LocaleValue> keys, FallbackLocale const& fallbackLocale) : keys(std::move(keys)) {
+        BasicLocalization(std::unordered_map<StringKey, LocaleValue const> keys, FallbackLocale const& fallbackLocale) : keys(std::move(keys)) {
             for (auto const& [fallbackKey, fallbackVal] : fallbackLocale.keys) {
                 this->keys.try_emplace(fallbackKey, fallbackVal);
             }
         }
 
-
-        [[nodiscard]] std::string_view get(std::string_view key) const noexcept {
+        [[nodiscard]] std::string_view const get(StringKey const key) const noexcept
+        {
             auto it = keys.find(key);
 
             if (it == keys.end())
@@ -34,7 +34,8 @@ namespace Veracruz {
             return it->second;
         }
 
-        [[nodiscard]] bool tryGet(std::string_view key, std::string_view& out) const noexcept {
+        [[nodiscard]] bool tryGet(StringKey const key, std::string_view &out) const noexcept
+        {
             auto it = keys.find(key);
 
             if (it == keys.end()) {
@@ -49,17 +50,18 @@ namespace Veracruz {
 
         // TODO: Test
 #ifdef FMT_CORE_H_
-        template<typename... TArgs>
-        [[nodiscard]] std::string get(std::string_view key, TArgs&&... args) const {
+        template <typename... TArgs>
+        [[nodiscard]] std::string get(StringKey const key, TArgs &&...args) const
+        {
             std::string ret;
             tryGet(key, ret, std::forward<TArgs>(args)...);
 
             return ret;
         }
 
-
-        template<typename... TArgs>
-        [[nodiscard]] bool tryGet(std::string_view key, std::string& out, TArgs&&... args) const {
+        template <typename... TArgs>
+        [[nodiscard]] bool tryGet(StringKey const key, std::string &out, TArgs &&...args) const
+        {
             auto ret = tryGet(key, out);
 
             if (ret) {
@@ -70,12 +72,13 @@ namespace Veracruz {
         }
 #endif
 
-        [[nodiscard]] constexpr bool hasKey(std::string_view key) const noexcept {
+        [[nodiscard]] constexpr bool hasKey(StringKey const key) const noexcept
+        {
             return keys.contains(key);
         }
 
     protected:
-        std::unordered_map<StringKey, LocaleValue> const keys;
+        std::unordered_map<StringKey, LocaleValue const> const keys;
     };
 
 //
