@@ -80,8 +80,23 @@ namespace Veracruz {
 
         std::optional<std::reference_wrapper<Localization const>> TryGetLocale(LangKey const& lang, ModKey info);
         Localization const& GetCurrentLocale(ModKey info);
+
+        /**
+         * @brief Get the Locale Event Handler object
+         * 
+         * Is called on language select
+         * 
+         * @param info The mod for the callback
+         * @return LanguageSelectedEvent& 
+         */
         LanguageSelectedEvent& GetLocaleEventHandler(ModKey info);
 
+        /**
+         * @brief Get the Basic Locale Event Handler object
+         * Is called on language load regardless of how many mods support the locale
+         * 
+         * @return BasicLanguageSelectedEvent& 
+         */
         BasicLanguageSelectedEvent& GetBasicLocaleEventHandler();
     };
 }
