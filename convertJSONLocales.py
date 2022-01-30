@@ -49,7 +49,7 @@ def cpplocalization(localizationName: str, dict_json):
 using namespace Veracruz;
 
 Localization {localizationName}::getLocalization() {{
-    return localizationLightDataT(
+    return Localization(
         {localeMap}
     );
 }}
