@@ -3,6 +3,11 @@
 #include <unordered_map>
 #include <string>
 #include <utility>
+#include <unordered_set>
+#include <optional>
+#include <vector>
+
+#include "beatsaber-hook/shared/utils/typedefs-wrappers.hpp"
 
 #include "modloader/shared/modloader.hpp"
 
@@ -28,6 +33,7 @@ namespace Veracruz {
          *
          * @param info the mod associated with the locales
          * @param locale the locales associated with their language
+         * @note Check Register overload for exceptions thrown
          */
         void Register(ModKey info, LocaleMap const& locale);
 
@@ -38,6 +44,7 @@ namespace Veracruz {
          * @param info The mod associated with the locale
          * @param langKey The language key
          * @param locale The locale
+         * @throws std::runtime_error if mod is already registered
          */
         void Register(ModKey info, LangKey const& langKey, Localization const& locale);
 
@@ -65,6 +72,12 @@ namespace Veracruz {
         LangKey const& GetSelectedLanguage();
 
         /**
+         * Returns true if a language is selected
+         * @return
+         */
+        bool IsLanguageSelected() noexcept;
+
+        /**
          * Gets a set of all registered languages
          * @return
          */
@@ -79,6 +92,15 @@ namespace Veracruz {
         std::optional<LangKey> FindSuitableFallback(ModInfo const& info, std::vector<LangKey> const& supportedLanguages) noexcept;
 
         std::optional<std::reference_wrapper<Localization const>> TryGetLocale(LangKey const& lang, ModKey info);
+
+        std::optional<std::reference_wrapper<Localization const>> TryGetCurrentLocale(ModKey info);
+
+        /**
+         * Retrieves the localization for the selected language and mod
+         * @param info
+         * @return
+         * @throws std::runtime_error if language is not selected or mod is not registered to langauge
+         */
         Localization const& GetCurrentLocale(ModKey info);
 
         /**

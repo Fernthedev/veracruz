@@ -1,7 +1,9 @@
 #pragma once
 
 #include <concepts>
-
+#include <string>
+#include <string_view>
+#include <unordered_map>
 
 namespace Veracruz {
     template<typename T>
@@ -9,16 +11,23 @@ namespace Veracruz {
         {t.get(key)} -> std::same_as<std::string_view>;
         {t.tryGet(key, out)} -> std::same_as<bool>;
         {t.hasKey(key)} -> std::same_as<bool>;
+        {T::EMPTY_LOCALE} -> std::same_as<T>;
     };
 
     using StringKey = std::string_view;
     using LocaleValue = std::string;
 
     struct BasicLocalization {
-        BasicLocalization(std::unordered_map<StringKey, LocaleValue const> keys) : keys(std::move(keys)) {}
+    private:
+        BasicLocalization() = default;
+
+    public:
+        static BasicLocalization const EMPTY_LOCALE;
+
+        BasicLocalization(std::unordered_map<StringKey, LocaleValue> keys) : keys(std::move(keys)) {}
 
         template<IsLocalization FallbackLocale>
-        BasicLocalization(std::unordered_map<StringKey, LocaleValue const> keys, FallbackLocale const& fallbackLocale) : keys(std::move(keys)) {
+        BasicLocalization(std::unordered_map<StringKey, LocaleValue> keys, FallbackLocale const& fallbackLocale) : keys(std::move(keys)) {
             for (auto const& [fallbackKey, fallbackVal] : fallbackLocale.keys) {
                 this->keys.try_emplace(fallbackKey, fallbackVal);
             }
@@ -78,7 +87,7 @@ namespace Veracruz {
         }
 
     protected:
-        std::unordered_map<StringKey, LocaleValue const> const keys;
+        std::unordered_map<StringKey, LocaleValue> keys;
     };
 
 //

@@ -97,6 +97,10 @@ LangKey const &LocalizationHandler::GetSelectedLanguage() {
     return selectedLanguage.value();
 }
 
+bool LocalizationHandler::IsLanguageSelected() noexcept {
+    return selectedLanguage.has_value();
+}
+
 std::optional<LangKey>
 LocalizationHandler::FindSuitableFallback(ModInfo const &info, std::vector<LangKey> const &supportedLanguages) noexcept {
     if (selectedLanguageMap->contains(&info)) {
@@ -132,6 +136,20 @@ LocalizationHandler::TryGetLocale(LangKey const &lang, ModKey info) {
     }
 
     return std::cref(mapIt->second);
+}
+
+std::optional<std::reference_wrapper<Localization const>> LocalizationHandler::TryGetCurrentLocale(ModKey info) {
+    if (!selectedLanguageMap) {
+        return std::nullopt;
+    }
+
+    auto it = selectedLanguageMap->find(&info);
+
+    if (it == selectedLanguageMap->end()) {
+        return std::nullopt;
+    }
+
+    return std::cref(it->second);
 }
 
 Localization const & LocalizationHandler::GetCurrentLocale(ModKey info) {

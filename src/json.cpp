@@ -9,7 +9,7 @@
 using namespace Veracruz;
 
 Localization JSON::parseJSON(rapidjson::Value const& json) {
-    std::unordered_map<StringKey, const LocaleValue> keys;
+    std::unordered_map<StringKey, LocaleValue> keys;
 
     // TODO: Support array?
 
@@ -19,5 +19,5 @@ Localization JSON::parseJSON(rapidjson::Value const& json) {
         keys.try_emplace(keyVal.name.GetString(), keyVal.value.GetString());
     }
 
-    return Localization(keys);
+    return {keys};
 }
