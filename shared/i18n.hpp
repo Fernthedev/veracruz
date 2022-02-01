@@ -9,22 +9,21 @@
 
 #include "beatsaber-hook/shared/utils/typedefs-wrappers.hpp"
 
-#include "modloader/shared/modloader.hpp"
+#include "modinfo.hpp"
 
 #include "localization.hpp"
+#include "langs.hpp"
 
 namespace Veracruz {
-    struct Lang;
-
     using ModKey = ModInfo const&;
-    using ModKeyPtr = ModInfo const*; // for hash map key
+    using ModKeyPtr = ModInfo; // for hash map key
     using LangKey = Lang;
 
     using Localization = BasicLocalization;
 
     using LocaleMap = std::unordered_map<LangKey const, const Localization>;
     using LanguageSelectedEvent = UnorderedEventCallback<LangKey const&, std::optional<std::reference_wrapper<Localization const>>>;
-    using BasicLanguageSelectedEvent = UnorderedEventCallback<LangKey const&>;
+    using BasicLanguageSelectedEvent = UnorderedEventCallback<std::optional<std::reference_wrapper<LangKey const>>>;
 
     namespace LocalizationHandler {
         /**
@@ -57,6 +56,12 @@ namespace Veracruz {
          * @throws If the language is not registered, this will throw an exception
          */
         void SelectLanguage(LangKey const& lang);
+
+        /**
+         * Deselects a language. Does not call mod callbacks
+         * Calls GetBasicLocaleEventHandler()
+         */
+        void UnSelectLanguage();
 
         /**
          * Registers the language

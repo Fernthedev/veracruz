@@ -86,6 +86,8 @@ namespace Veracruz {
             return keys.contains(key);
         }
 
+        bool operator==(BasicLocalization const &rhs) const = default;
+
     protected:
         std::unordered_map<StringKey, LocaleValue> keys;
     };
