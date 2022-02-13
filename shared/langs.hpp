@@ -3,14 +3,21 @@
 #include <string>
 
 namespace Veracruz {
+    enum struct LangDirection {
+        LEFT_TO_RIGHT,
+        RIGHT_TO_LEFT
+    };
     struct Lang {
         const std::string langName; // the name of the language in the native language
         const std::string region; // region of the language
         const std::string shortName; // the name of the language shortened
+        const LangDirection langDirection;
 
-        Lang(std::string_view langName, std::string_view region) : langName(langName), region(region), shortName(langName) {}
+        Lang(std::string_view langName, std::string_view region, LangDirection langDir = LangDirection::LEFT_TO_RIGHT)
+        : langName(langName), region(region), shortName(langName), langDirection(langDir) {}
 
-        Lang(std::string_view langName, std::string_view region, std::string_view shortName) : langName(langName), region(region), shortName(shortName) {}
+        Lang(std::string_view langName, std::string_view region, std::string_view shortName, LangDirection langDir = LangDirection::LEFT_TO_RIGHT) :
+        langName(langName), region(region), shortName(shortName), langDirection(langDir) {}
 
         bool operator ==(Lang const&) const = default;
     };
