@@ -7,7 +7,11 @@
     "version": "0.1.0",
     "url": "https://github.com/Fernthedev/veracruz-quest",
     "additionalData": {
-      "overrideSoName": "libveracruz.so"
+      "soLink": "https://github.com/Fernthedev/veracruz-quest/releases/download/v0.1.0/libveracruz.so",
+      "debugSoLink": "https://github.com/Fernthedev/veracruz-quest/releases/download/v0.1.0/debug_libveracruz.so",
+      "overrideSoName": "libveracruz.so",
+      "modLink": "https://github.com/Fernthedev/veracruz-quest/releases/download/v0.1.0/veracruz.qmod",
+      "branchName": "version-v0.1.0"
     }
   },
   "dependencies": [
