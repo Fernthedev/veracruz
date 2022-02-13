@@ -5,7 +5,7 @@
     "name": "Veracruz",
     "id": "veracruz",
     "version": "0.0.1",
-    "url": null,
+    "url": "https://github.com/Fernthedev/veracruz-quest",
     "additionalData": {
       "overrideSoName": "libveracruz.so"
     }
