@@ -27,7 +27,7 @@
     },
     {
       "id": "fmt",
-      "versionRange": "=8.0.3",
+      "versionRange": "^8.0.3",
       "additionalData": {
         "private": true
       }

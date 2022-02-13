@@ -24,7 +24,7 @@ constexpr static void fmtLog(Logging::Level lvl, fmt::format_string<TArgs...> st
 }
 
 template<typename Exception = std::runtime_error, typename... TArgs>
-inline static void fmtThrowError(fmt::format_string<TArgs...> str, TArgs&&... args) {
+constexpr static void fmtThrowError(fmt::format_string<TArgs...> str, TArgs&&... args) {
     fmtLog<TArgs...>(Logging::ERROR, str, std::forward<TArgs>(args)...);
     throw Exception(fmt::format<TArgs...>(str, std::forward<TArgs>(args)...));
 }

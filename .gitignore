@@ -63,3 +63,26 @@ qpm_defines.cmake
 cmake-build-*/
 extern.cmake
 mod.json
+# Build files
+*.so
+obj/
+libs/
+ndkpath.txt
+*.qmod
+
+build/
+
+
+# QPM
+qpm.shared.json
+extern/
+*.backup
+
+# Logs
+*.log
+
+profiling/*
+QPM/
+QPM/*
+ninja-build/
+ninja-build/*
